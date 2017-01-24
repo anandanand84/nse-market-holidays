@@ -45,4 +45,13 @@ describe("Trading day", () => {
     expect(result).to.be.equal('2017-01-27');;
     return;
   });
+  
+  it("Should be able to get next and previous days without a date param", async () => {
+    var result = await NSE.getNextTradingDay()
+    expect(result).to.be.a('string');
+    
+    var result = await NSE.getPreviousTradingDay()
+    expect(result).to.be.a('string');
+    return;
+  });
 });

@@ -53,12 +53,12 @@ async function _isTradingDay(d:moment.Moment) {
     return holiday.length === 0 && !weekEnd;
 }
 
-export async function isTradingDay(d:String) {
+export async function isTradingDay(d:String = moment.tz('Asia/Kolkata').format()) {
     return await _isTradingDay(moment.tz(d, 'Asia/Kolkata'));
 }
 
 
-export async function getPreviousTradingDay(date: String) {
+export async function getPreviousTradingDay(date: String = moment.tz('Asia/Kolkata').format()) {
     var compareDate = moment.tz(date, "Asia/Kolkata");
     var lastTradingDay:moment.Moment;
     while(!lastTradingDay) {
@@ -68,7 +68,7 @@ export async function getPreviousTradingDay(date: String) {
     return lastTradingDay.format("YYYY-MM-DD");;
 }
 
-export async function getNextTradingDay(date: String ) {
+export async function getNextTradingDay(date: String = moment.tz('Asia/Kolkata').format()) {
     var compareDate = moment.tz(date, "Asia/Kolkata");
     var lastTradingDay:moment.Moment;
     while(!lastTradingDay) {
@@ -120,12 +120,12 @@ export function unSubscribeNotifyMarketOpen(subscriberId:any) {
 }
 
 export async function timeToOpen() {
-    var tradingDay = await _isTradingDay(moment.tz('Asia/Kolkata'));
-    if(tradingDay) {
+    var trading = await isMarketOpen();
+    if(trading) {
         return 'OPEN';
     } else {
         var nextTradingDay = await getNextTradingDay(moment.tz('Asia/Kolkata').format('YYYY-MM-DD'));
-        return 'OPENS' + moment(nextTradingDay+'T09:15:00.000+05:30').tz('Asia/Kolkata').fromNow();
+        return 'Opens ' + moment(nextTradingDay+'T09:15:00.000+05:30').tz('Asia/Kolkata').fromNow();
     }
 }
 
@@ -147,3 +147,5 @@ try{
 catch (err){
     console.error('Invalid cron job', err);
 }
+
+timeToOpen().then(console.log);
