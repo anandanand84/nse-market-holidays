@@ -22,10 +22,13 @@
     "watch:test": "npm run test -- --watch"
   },
   "dependencies": {
+    "@types/cron": "^1.0.30",
     "cheerio": "^0.22.0",
+    "cron": "^1.2.1",
     "moment-timezone": "^0.5.11",
     "request": "^2.79.0",
-    "request-promise": "^4.1.1"
+    "request-promise": "^4.1.1",
+    "simple-pubsub": "^1.0.0"
   },
   "devDependencies": {
     "@types/chai": "^3.0.0",

@@ -2,7 +2,10 @@ import { updateNotifierCheck } from 'tslint/lib/updateNotifier';
 import * as request from 'request-promise';
 import * as cheerio from 'cheerio';
 import * as moment from 'moment-timezone';
+import { CronJob } from 'cron';
 
+var pubsub:any = require('simple-pubsub');
+  
 const holidayList:moment.Moment[] = new Array<moment.Moment>();
 
 interface MonthArray {
@@ -90,4 +93,57 @@ function _isTimeWithinMarketTime (date:moment.Moment) {
 export async function isMarketOpen( ) {
     var compareDate = moment.tz("Asia/Kolkata");
     return (await _isTradingDay(compareDate)) && _isTimeWithinMarketTime(compareDate)
+}
+
+function _notifyMarketOpen () {
+    pubsub.publish('MARKET_OPEN', true);
+} 
+
+function _notifyMarketClose () {
+    pubsub.publish('MARKET_CLOSE', true);
+} 
+
+export function subscribeNotifyMarketOpen(callback:any) {
+    return pubsub.subscribe('MARKET_OPEN', callback);
+};
+
+export function subscribeNotifyMarketClose(callback:any) {
+    return pubsub.subscribe('MARKET_CLOSE', callback);
+};
+
+export function unSubscribeNotifyMarketClose(subscriberId:any) {
+    return pubsub.unsubscribe(subscriberId);
+};
+
+export function unSubscribeNotifyMarketOpen(subscriberId:any) {
+    return pubsub.unsubscribe(subscriberId);
+}
+
+export async function timeToOpen() {
+    var tradingDay = await _isTradingDay(moment.tz('Asia/Kolkata'));
+    if(tradingDay) {
+        return 'OPEN';
+    } else {
+        var nextTradingDay = await getNextTradingDay(moment.tz('Asia/Kolkata').format('YYYY-MM-DD'));
+        return 'OPENS' + moment(nextTradingDay+'T09:15:00.000+05:30').tz('Asia/Kolkata').fromNow();
+    }
+}
+
+try{
+    new CronJob('00 00 09 * * 1-5',  async function() {
+        var tradingDay = await _isTradingDay(moment.tz('Asia/Kolkata'));
+        if(tradingDay) {
+            _notifyMarketOpen();
+        }
+    }, null, true, 'Asia/Kolkata');
+
+    new CronJob('00 30 15 * * 1-5', async function() {
+        var tradingDay = await _isTradingDay(moment.tz('Asia/Kolkata'));
+        if(tradingDay) {
+            _notifyMarketClose();
+        }
+    }, null, true, 'Asia/Kolkata');
+}
+catch (err){
+    console.error('Invalid cron job', err);
 }
