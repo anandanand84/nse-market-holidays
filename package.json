@@ -1,0 +1,47 @@
+{
+  "name": "nse-market-holidays",
+  "version": "0.0.0",
+  "description": "nse-market-holidays",
+  "license": "MIT",
+  "repository": "",
+  "author": "",
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "clean": "rimraf lib",
+    "lint": "tslint --force --format verbose \"src/**/*.ts\"",
+    "build": "npm run clean && npm run lint && echo Using TypeScript && tsc --version && tsc --pretty",
+    "test": "npm run build && mocha --compilers ts:ts-node/register --recursive test/**/*-spec.ts",
+    "watch": "npm run build -- --watch",
+    "watch:test": "npm run test -- --watch"
+  },
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "moment-timezone": "^0.5.11",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^3.0.0",
+    "@types/cheerio": "^0.17.31",
+    "@types/mocha": "^2.0.0",
+    "@types/moment-timezone": "^0.2.34",
+    "@types/node": "6.0.31",
+    "@types/request-promise": "^4.1.33",
+    "chai": "^3.0.0",
+    "mocha": "^3.0.0",
+    "rimraf": "^2.0.0",
+    "ts-node": "^1.0.0",
+    "tslint": "^4.0.0",
+    "typescript": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  }
+}
