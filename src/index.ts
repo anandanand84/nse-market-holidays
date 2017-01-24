@@ -122,9 +122,19 @@ export function unSubscribeNotifyMarketOpen(subscriberId:any) {
 
 export async function timeToOpen() {
     var trading = await isMarketOpen();
+    var tradingDay = await isTradingDay();
+    let mom = moment().tz('Asia/Kolkata');
+    let hours = mom.get('hours');
+    let date = mom.format("YYYY-MM-DD");
+    let beforeMarketOpen;
+    if(hours < 9) {
+        beforeMarketOpen = true;
+    }
     if(trading) {
         return 'OPEN';
-    } else {
+    } if(tradingDay && beforeMarketOpen) {
+        return 'Opens ' + moment(date+'T09:15:00.000+05:30').tz('Asia/Kolkata').fromNow();
+    }else {
         var nextTradingDay = await getNextTradingDay(moment.tz('Asia/Kolkata').format('YYYY-MM-DD'));
         return 'Opens ' + moment(nextTradingDay+'T09:15:00.000+05:30').tz('Asia/Kolkata').fromNow();
     }
