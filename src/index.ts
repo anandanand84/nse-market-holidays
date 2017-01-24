@@ -4,7 +4,8 @@ import * as cheerio from 'cheerio';
 import * as moment from 'moment-timezone';
 import { CronJob } from 'cron';
 
-var pubsub:any = require('simple-pubsub');
+var PubSub:any = require('simple-pubsub')
+var pubsub:any = new PubSub();
   
 const holidayList:moment.Moment[] = new Array<moment.Moment>();
 

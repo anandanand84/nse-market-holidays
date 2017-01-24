@@ -54,4 +54,12 @@ describe("Trading day", () => {
     expect(result).to.be.a('string');
     return;
   });
+  
+  it("Should be able to subscribe to market open", async () => {
+    var result = NSE.subscribeNotifyMarketClose(function() {
+
+    });
+    expect(result).to.be.a('string');
+    return;
+  });
 });
